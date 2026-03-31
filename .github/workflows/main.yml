@@ -15,16 +15,16 @@ jobs:
 
       - name: Fetch trending
         run: |
-          curl -s https://github.com/trending > trending.html
+          curl -s 'https://github.com/trending' > trending.html          
 
       - name: Extract AI projects
         run: |
-          grep -i 'agent\|ai\|gpt' trending.html | head -20 > result.txt
+          grep -i 'agent\|ai\|gpt' trending.html | head -20 > result.txt          
 
       - name: Send Email
         run: |
           pip install yagmail
-          python3 - << 'EOF'
+          python3 - << 'EOF'          
 import yagmail
 yag = yagmail.SMTP(
     user="${{ secrets.EMAIL_USER }}",
