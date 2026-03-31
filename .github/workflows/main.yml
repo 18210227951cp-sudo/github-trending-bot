@@ -2,7 +2,7 @@ name: GitHub Trending AI Bot
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时运行一次
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Send Email
         run: |
           pip install yagmail
-          python3 <<EOF
+          python3 - << 'EOF'
 import yagmail
 
 yag = yagmail.SMTP(
