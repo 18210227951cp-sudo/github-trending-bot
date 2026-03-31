@@ -1,0 +1,44 @@
+name: GitHub Trending AI Bot
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时运行一次
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch trending
+        run: |
+          curl -s https://github.com/trending > trending.html
+
+      - name: Extract AI projects
+        run: |
+          grep -i 'agent\|ai\|gpt' trending.html | head -20 > result.txt
+
+      - name: Send Email
+        run: |
+          pip install yagmail
+          python3 <<EOF
+import yagmail
+
+yag = yagmail.SMTP(
+    user="${{ secrets.EMAIL_USER }}",
+    password="${{ secrets.EMAIL_PASS }}",
+    host='smtp.163.com'
+)
+
+with open("result.txt") as f:
+    content = f.read()
+
+yag.send(
+    to="${{ secrets.EMAIL_USER }}",
+    subject="🔥 GitHub AI Trending",
+    contents=content
+)
+EOF
