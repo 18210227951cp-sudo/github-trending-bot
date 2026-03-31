@@ -24,21 +24,4 @@ jobs:
       - name: Send Email
         run: |
           pip install yagmail
-          python3 - << 'EOF'
-
-
-yag = yagmail.SMTP(
-    user="${{ secrets.EMAIL_USER }}",
-    password="${{ secrets.EMAIL_PASS }}",
-    host='smtp.163.com'
-)
-
-with open("result.txt") as f:
-    content = f.read()
-
-yag.send(
-    to="${{ secrets.EMAIL_USER }}",
-    subject="🔥 GitHub AI Trending",
-    contents=content
-)
-EOF
+          python3 -m yagmail --user "${{ secrets.EMAIL_USER }}" --password "${{ secrets.EMAIL_PASS }}" --to "${{ secrets.EMAIL_USER }}" --subject "🔥 GitHub AI Trending" --contents-file result.txt
