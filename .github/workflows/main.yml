@@ -15,7 +15,7 @@ jobs:
 
       - name: Fetch trending
         run: |
-          curl -s 'https://github.com/trending' > trending.html
+          curl -s https://github.com/trending > trending.html
 
       - name: Extract AI projects
         run: |
@@ -24,4 +24,21 @@ jobs:
       - name: Send Email
         run: |
           pip install yagmail
-          python3 -m yagmail --user "${{ secrets.EMAIL_USER }}" --password "${{ secrets.EMAIL_PASS }}" --to "${{ secrets.EMAIL_USER }}" --subject "🔥 GitHub AI Trending" --contents-file result.txt
+          python3 - << 'EOF'
+          import yagmail
+
+          yag = yagmail.SMTP(
+              user="${{ secrets.EMAIL_USER }}",
+              password="${{ secrets.EMAIL_PASS }}",
+              host='smtp.163.com'
+          )
+
+          with open("result.txt") as f:
+              content = f.read()
+
+          yag.send(
+              to="${{ secrets.EMAIL_USER }}",
+              subject="🔥 GitHub AI Trending",
+              contents=content
+          )
+          EOF
